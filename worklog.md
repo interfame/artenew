@@ -40,3 +40,24 @@ Stage Summary:
 - Proyecto completo y verificado end-to-end con browser
 - Credenciales admin: josedemo@demo.com / artedur2026 en /admin
 - Sin botón de login visible en el sitio público (solo /admin directo)
+
+---
+Task ID: 3
+Agent: main (Z.ai Code)
+Task: Reemplazar contenido del sitio público con el contenido EXACTO de artedur.com (petición explícita del usuario)
+
+Work Log:
+- Re-leído artedur.com completo con page_reader: extraje TODOS los textos literales (hero, servicios 01-04, revestimientos, pisos, pintura con lista de 7 items y 2 párrafos, 8 materiales, portfolio, contacto, footer)
+- Descargué las 18 imágenes reales de artedur.com (www.artedur.com/assets/*.jpeg siguiendo redirect 307) a /public/assets/
+- Descargué el hero background original de Unsplash (photo-1504307651254) a /assets/hero-bg.jpg
+- Mapeé imágenes por sección desde el HTML original: #construccion-seco→82, #pisos→47/59/70, #pintura→8/10/19/20/33/21, #trabajos→12 imágenes
+- Reescrito src/app/page.tsx con textos VERBATIM de artedur.com (incluye sección Revestimiento de Alta Calidad que faltaba, lista completa de pintura con 7 puntos, 8 materiales, 12 obras en portfolio, dirección completa, redes sociales)
+- Logo "ARTE DUR DURLOCK" replicado (Bebas + sublínea DURLOCK en amarillo), botón WhatsApp flotante verde #25D366 con anillo pulsante como el original
+- Verificado con curl: todos los checks de contenido exacto ✅, 19 imágenes servidas 200
+- Verificado con Agent Browser: hero, seco, revestimiento, pisos, pintura, materiales, portfolio, contacto, footer renderizan con imágenes reales
+- Probado flujo completo: form contacto crea lead "Juan Pérez Test" + email IA; bot WhatsApp responde precio cielorraso $26.000/m²; login /admin josedemo@demo.com OK; módulos CRM/Facturación/Marketing/WhatsApp/Emails operativos
+
+Stage Summary:
+- Sitio público ahora es réplica de contenido EXACTO de artedur.com (textos + imágenes reales del servidor del usuario)
+- Panel CRM intacto y funcional con todas las automatizaciones
+- Lint limpio, sin errores en dev.log
