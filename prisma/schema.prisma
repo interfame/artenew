@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Lead {
+  id         String     @id @default(cuid())
+  name       String
+  phone      String?
+  email      String?
+  source     String     @default("web")
+  status     String     @default("nuevo")
+  interest   String?
+  notes      String?
+  campaignId String?
+  budget     Float?
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  activities Activity[]
+  invoices   Invoice[]
+}
+
+model Client {
+  id        String    @id @default(cuid())
+  name      String
+  phone     String?
+  email     String?
+  address   String?
+  cuit      String?
+  type      String    @default("particular")
+  notes     String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  invoices  Invoice[]
+}
+
+model Product {
+  id        String   @id @default(cuid())
+  sku       String   @unique
+  name      String
+  category  String
+  brand     String?
+  unit      String   @default("unidad")
+  price     Float    @default(0)
+  cost      Float    @default(0)
+  stock     Int      @default(0)
+  minStock  Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Invoice {
+  id            String    @id @default(cuid())
+  number        String    @unique
+  type          String    @default("B")
+  clientId      String?
+  leadId        String?
+  clientName    String
+  items         String    @default("[]")
+  subtotal      Float     @default(0)
+  iva           Float     @default(0)
+  total         Float     @default(0)
+  status        String    @default("pendiente")
+  paymentMethod String?
+  notes         String?
+  dueDate       DateTime?
+  paidAt        DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  client        Client?   @relation(fields: [clientId], references: [id])
+  lead          Lead?     @relation(fields: [leadId], references: [id])
+}
+
+model Campaign {
+  id        String    @id @default(cuid())
+  name      String
+  channel   String    @default("facebook")
+  objective String    @default("leads")
+  status    String    @default("borrador")
+  budget    Float     @default(0)
+  spent     Float     @default(0)
+  startDate DateTime?
+  endDate   DateTime?
+  headline  String?
+  body      String?
+  cta       String?
+  audience  String?
+  results   String    @default("{}")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model SocialPost {
+  id          String    @id @default(cuid())
+  platform    String    @default("facebook")
+  content     String
+  hashtags    String?
+  imageUrl    String?
+  status      String    @default("borrador")
+  scheduledAt DateTime?
+  publishedAt DateTime?
+  aiGenerated Boolean   @default(false)
+  likes       Int       @default(0)
+  comments    Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model EmailTemplate {
+  id        String   @id @default(cuid())
+  name      String
+  subject   String
+  body      String
+  category  String   @default("general")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EmailLog {
+  id          String   @id @default(cuid())
+  to          String
+  subject     String
+  body        String
+  status      String   @default("enviado")
+  leadId      String?
+  campaignId  String?
+  aiGenerated Boolean  @default(false)
+  opened      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+model Conversation {
+  id            String    @id @default(cuid())
+  contactName   String
+  phone         String
+  channel       String    @default("whatsapp")
+  status        String    @default("abierta")
+  unread        Int       @default(0)
+  leadId        String?
+  lastMessageAt DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  messages      Message[]
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  role           String
+  content        String
+  aiGenerated    Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  type      String
+  content   String
+  leadId    String?
+  lead      Lead?    @relation(fields: [leadId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  key   String @id
+  value String
+}
