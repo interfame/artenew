@@ -52,3 +52,18 @@ prompt
 server.log
 # Skills directory
 /skills/
+# environment
+.env
+.env*.local
+
+# local database (dev) - db/custom.db SI se commitea como base demo/seed
+db/*.db-journal
+db/*.db-shm
+db/*.db-wal
+
+# sandbox internals
+tool-results/
+agent-ctx/
+download/
+worklog.md
+dev.out.log
